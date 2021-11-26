@@ -1,0 +1,252 @@
+unit uConsultaCorretor;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uModeloCad, Data.DB, Datasnap.DBClient,
+  System.ImageList, Vcl.ImgList, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids,
+  Vcl.ExtCtrls, uClsOperadoras, uDatamodulo, Vcl.StdCtrls;
+
+type
+  TfrmConsultaCorretor = class(TfrmModeloCad)
+    TB_ConsultaID: TIntegerField;
+    TB_ConsultaCPF: TStringField;
+    TB_ConsultaNome: TStringField;
+    TB_ConsultaDT_Nascimento: TStringField;
+    TB_ConsultaCelular: TStringField;
+    procedure btn_SairClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormShow(Sender: TObject);
+    procedure btn_IncluirClick(Sender: TObject);
+    procedure btn_AlterarClick(Sender: TObject);
+    procedure btn_TodosClick(Sender: TObject);
+    procedure btn_FiltrarClick(Sender: TObject);
+    procedure btn_ExcluirClick(Sender: TObject);
+    procedure btn_ConsultarClick(Sender: TObject);
+    procedure DBG_CadDrawDataCell(Sender: TObject; const Rect: TRect;
+      Field: TField; State: TGridDrawState);
+    procedure DBG_CadDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure DBG_CadCellClick(Column: TColumn);
+    procedure DBG_CadDblClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure ds_ConsultaStateChange(Sender: TObject);
+  private
+    { Private declarations }
+    Operadoras: TOperadoras;
+    procedure LeTodosRegistros;
+    procedure LeLogo(const Valor: string);
+  public
+    { Public declarations }
+  end;
+
+var
+  frmConsultaCorretor: TfrmConsultaCorretor;
+
+implementation
+
+{$R *.dfm}
+
+uses uCadOperadoras, uCadClientes, uConsultaClientes, uCadCorretor;
+
+procedure TfrmConsultaCorretor.btn_AlterarClick(Sender: TObject);
+begin
+  inherited;
+  Application.CreateForm(TfrmCadOperadoras,frmCadOperadoras);
+  frmCadOperadoras.TB_Cadastro.CreateDataSet;
+  frmCadOperadoras.LStatus := '[Alterando]';
+  frmCadOperadoras.ShowModal;
+end;
+
+procedure TfrmConsultaCorretor.btn_ConsultarClick(Sender: TObject);
+var
+  LID: Integer;
+begin
+  inherited;
+  if TB_Consulta.RecordCount = 0 then
+  begin
+    Application.MessageBox('Não há dados para Consultar.!','Aviso',mb_Ok+mb_IconExclamation);
+    exit;
+  end
+  else
+  begin
+    Application.CreateForm(TfrmCadCorretor,frmCadCorretor);
+    frmCadCorretor.TB_Cadastro.CreateDataSet;
+    frmCadCorretor.LStatus :='[Consultando]';
+    LID := TB_ConsultaID.AsInteger;
+    frmCadCorretor.pn_Client_Cad.Visible    := True;
+    frmCadCorretor.pn_Client_Filtro.Visible := False;
+    TB_Consulta.First;
+    while not TB_Consulta.Eof do
+    begin
+      frmCadCorretor.TB_Cadastro.Insert;
+      frmCadCorretor.TB_CadastroID.AsInteger         := TB_ConsultaID.AsInteger;
+      frmCadCorretor.TB_CadastroNome.AsString        := TB_ConsultaNome.AsString;
+      frmCadCorretor.TB_CadastroCPF.AsString         := TB_ConsultaCPF.AsString;
+      frmCadCorretor.TB_CadastroCelular.AsString     := TB_ConsultaCelular.AsString;
+      frmCadCorretor.TB_Cadastro.Post;
+      TB_Consulta.Next;
+    end;
+    frmCadCorretor.TB_Cadastro.Locate('ID',LID,[]);
+    TB_Consulta.Locate('ID',LID,[]);
+    frmCadCorretor.ShowModal;
+  end;
+end;
+
+procedure TfrmConsultaCorretor.btn_ExcluirClick(Sender: TObject);
+begin
+  inherited;
+  if TB_Consulta.RecordCount = 0 then
+  begin
+    Application.MessageBox('Não há dados para ser excluido.!','Aviso',mb_Ok+mb_IconExclamation);
+    exit;
+  end
+  else
+  begin
+    if Application.messageBox('Deseja Realmente Apagar Esse Cliente?',
+      'Confirmação',mb_YesNo+mb_IconInformation+mb_DefButton2) = IDYES then
+    begin
+      Operadoras:=TOperadoras.create;
+      Operadoras.SetID(TB_ConsultaID.AsInteger);
+      Operadoras.ExcluiDados;
+      Operadoras.Free;
+      LeTodosRegistros;
+      LeLogo(TB_ConsultaLogo.AsString);
+    end;
+  end;
+end;
+
+procedure TfrmConsultaCorretor.btn_FiltrarClick(Sender: TObject);
+begin
+  inherited;
+  Application.CreateForm(TfrmCadOperadoras,frmCadOperadoras);
+  frmCadOperadoras.TB_Cadastro.CreateDataSet;
+  frmCadOperadoras.LStatus := '[Filtrando]';
+  frmCadOperadoras.ShowModal;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaCorretor.btn_IncluirClick(Sender: TObject);
+begin
+  inherited;
+  Application.CreateForm(TfrmCadOperadoras,frmCadOperadoras);
+  frmCadOperadoras.TB_Cadastro.CreateDataSet;
+  frmCadOperadoras.LStatus := '[Incluindo]';
+  frmCadOperadoras.ShowModal;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaCorretor.btn_SairClick(Sender: TObject);
+begin
+  inherited;
+  close;
+end;
+
+procedure TfrmConsultaCorretor.btn_TodosClick(Sender: TObject);
+begin
+  inherited;
+  LeTodosRegistros;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaCorretor.DBG_CadCellClick(Column: TColumn);
+begin
+  inherited;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaCorretor.DBG_CadDblClick(Sender: TObject);
+begin
+  inherited;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaCorretor.DBG_CadDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  inherited;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaCorretor.DBG_CadDrawDataCell(Sender: TObject;
+  const Rect: TRect; Field: TField; State: TGridDrawState);
+begin
+  inherited;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaCorretor.ds_ConsultaStateChange(Sender: TObject);
+begin
+  inherited;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaCorretor.FormActivate(Sender: TObject);
+begin
+  inherited;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaCorretor.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  inherited;
+  TB_Consulta.Close;
+  Action := cafree;
+end;
+
+procedure TfrmConsultaCorretor.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  inherited;
+  if CanClose then
+    frmConsultaOperadoras := NIL;
+end;
+
+procedure TfrmConsultaCorretor.FormShow(Sender: TObject);
+begin
+  inherited;
+  TB_Consulta.CreateDataSet;
+end;
+
+procedure TfrmConsultaCorretor.LeLogo(const Valor: string);
+begin
+  if Valor <> '' then
+  begin
+    img_Logo.Picture.LoadFromFile(Valor);
+  end;
+end;
+
+procedure TfrmConsultaCorretor.LeTodosRegistros;
+begin
+  Operadoras:=TOperadoras.create;
+  Operadoras.ConsultaClientesGeral('TB_Operadoras');
+  Operadoras.Free;
+
+  TB_Consulta.EmptyDataSet;
+
+  frmDatamodulo.dsClientes.DataSet.First;
+  while not frmDatamodulo.dsClientes.DataSet.eof  do
+  begin
+    TB_Consulta.Insert;
+    TB_ConsultaID.AsInteger           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('ID').AsInteger;
+    TB_ConsultaCnpj.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Cnpj').AsString;
+    TB_ConsultaRazaoSocial.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('RazaoSocial').AsString;
+    TB_ConsultaCEP.AsString           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Cep').AsString;
+    TB_ConsultaLogradouro.AsString    :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Logradouro').AsString;
+    TB_ConsultaNumero.AsString        :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Numero').AsString;
+    TB_ConsultaComplemento.AsString   :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Complemento').AsString;
+    TB_ConsultaBairro.AsString        :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Bairro').AsString;
+    TB_ConsultaCidade.AsString        :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Cidade').AsString;
+    TB_ConsultaSigla_uf.AsString      :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Ibge_cidade').AsString;
+    TB_ConsultaIbge_cidade.AsString   :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Sigla_uf').AsString;
+    TB_ConsultaIbge_uf.AsString       :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Ibge_uf').AsString;
+    TB_ConsultaLogo.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Logo').AsString;
+    TB_Consulta.Post;
+    frmDatamodulo.dsClientes.DataSet.next;
+  end;
+end;
+
+end.

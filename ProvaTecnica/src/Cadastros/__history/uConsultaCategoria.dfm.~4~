@@ -1,0 +1,108 @@
+inherited frmConsultaCategoria: TfrmConsultaCategoria
+  Caption = 'Consulta de Categoria'
+  ClientHeight = 484
+  ClientWidth = 1159
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnShow = FormShow
+  ExplicitWidth = 1175
+  ExplicitHeight = 523
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pn_Client_Cad: TPanel
+    Width = 991
+    Height = 484
+    ExplicitWidth = 991
+    ExplicitHeight = 484
+    inherited DBG_Cad: TDBGrid
+      Width = 991
+      Height = 484
+      Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      OnCellClick = DBG_CadCellClick
+    end
+  end
+  inherited pn_Left_Cad: TPanel
+    Left = 991
+    Height = 484
+    ExplicitLeft = 991
+    ExplicitHeight = 484
+    inherited btn_Filtrar: TSpeedButton
+      Left = 8
+      Top = 9
+      OnClick = btn_FiltrarClick
+      ExplicitLeft = 8
+      ExplicitTop = 9
+    end
+    inherited btn_Todos: TSpeedButton
+      Left = 8
+      Top = 71
+      OnClick = btn_TodosClick
+      ExplicitLeft = 8
+      ExplicitTop = 71
+    end
+    inherited btn_Incluir: TSpeedButton
+      Left = 8
+      Top = 134
+      OnClick = btn_IncluirClick
+      ExplicitLeft = 8
+      ExplicitTop = 134
+    end
+    inherited btn_Alterar: TSpeedButton
+      Left = 8
+      Top = 198
+      OnClick = btn_AlterarClick
+      ExplicitLeft = 8
+      ExplicitTop = 198
+    end
+    inherited btn_Excluir: TSpeedButton
+      Left = 8
+      Top = 261
+      OnClick = btn_ExcluirClick
+      ExplicitLeft = 8
+      ExplicitTop = 261
+    end
+    inherited btn_Consultar: TSpeedButton
+      Left = 8
+      Top = 322
+      OnClick = btn_ConsultarClick
+      ExplicitLeft = 8
+      ExplicitTop = 322
+    end
+    inherited btn_Sair: TSpeedButton
+      Left = 8
+      Top = 431
+      OnClick = btn_SairClick
+      ExplicitLeft = 8
+      ExplicitTop = 431
+    end
+  end
+  inherited TB_Consulta: TClientDataSet
+    PersistDataPacket.Data = {
+      430000009619E0BD010000001800000002000000000003000000430002494404
+      000100000000000943617465676F726961010049000000010005574944544802
+      0002003C000000}
+    Active = True
+    FieldDefs = <
+      item
+        Name = 'ID'
+        DataType = ftInteger
+      end
+      item
+        Name = 'Categoria'
+        DataType = ftString
+        Size = 60
+      end>
+    StoreDefs = True
+    object TB_ConsultaID: TIntegerField
+      DisplayWidth = 8
+      FieldName = 'ID'
+      Visible = False
+    end
+    object TB_ConsultaCategoria: TStringField
+      DisplayLabel = 'Descri'#231#227'o da Categoria'
+      DisplayWidth = 116
+      FieldName = 'Categoria'
+      Size = 60
+    end
+  end
+end

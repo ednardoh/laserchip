@@ -1,0 +1,31 @@
+unit uModeloTelaCad;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Data.DB, Datasnap.DBClient,
+  Vcl.DBCtrls, Vcl.Buttons;
+
+type
+  TForm1 = class(TForm)
+    pn_Client_Cad: TPanel;
+    pn_Left_Cad: TPanel;
+    ds_Cadastro: TDataSource;
+    TB_Cadastro: TClientDataSet;
+    Dbn_Cad: TDBNavigator;
+    Btn_Retornar: TSpeedButton;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+end.

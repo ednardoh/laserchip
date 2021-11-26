@@ -1,0 +1,120 @@
+inherited frmConsultaTabPreco: TfrmConsultaTabPreco
+  Caption = 'Consulta de Tabela de Pre'#231'o'
+  ClientHeight = 484
+  ClientWidth = 1159
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnShow = FormShow
+  ExplicitWidth = 1175
+  ExplicitHeight = 523
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pn_Client_Cad: TPanel
+    Width = 991
+    Height = 484
+    ExplicitWidth = 991
+    ExplicitHeight = 484
+    inherited DBG_Cad: TDBGrid
+      Width = 991
+      Height = 484
+      Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      OnCellClick = DBG_CadCellClick
+    end
+  end
+  inherited pn_Left_Cad: TPanel
+    Left = 991
+    Height = 484
+    ExplicitLeft = 991
+    ExplicitHeight = 484
+    inherited btn_Filtrar: TSpeedButton
+      Left = 8
+      Top = 9
+      OnClick = btn_FiltrarClick
+      ExplicitLeft = 8
+      ExplicitTop = 9
+    end
+    inherited btn_Todos: TSpeedButton
+      Left = 8
+      Top = 71
+      OnClick = btn_TodosClick
+      ExplicitLeft = 8
+      ExplicitTop = 71
+    end
+    inherited btn_Incluir: TSpeedButton
+      Left = 8
+      Top = 134
+      OnClick = btn_IncluirClick
+      ExplicitLeft = 8
+      ExplicitTop = 134
+    end
+    inherited btn_Alterar: TSpeedButton
+      Left = 8
+      Top = 198
+      OnClick = btn_AlterarClick
+      ExplicitLeft = 8
+      ExplicitTop = 198
+    end
+    inherited btn_Excluir: TSpeedButton
+      Left = 8
+      Top = 261
+      OnClick = btn_ExcluirClick
+      ExplicitLeft = 8
+      ExplicitTop = 261
+    end
+    inherited btn_Consultar: TSpeedButton
+      Left = 8
+      Top = 322
+      OnClick = btn_ConsultarClick
+      ExplicitLeft = 8
+      ExplicitTop = 322
+    end
+    inherited btn_Sair: TSpeedButton
+      Left = 8
+      Top = 431
+      OnClick = btn_SairClick
+      ExplicitLeft = 8
+      ExplicitTop = 431
+    end
+  end
+  inherited TB_Consulta: TClientDataSet
+    PersistDataPacket.Data = {
+      610000009619E0BD010000001800000003000000000003000000610002494404
+      000100000000000A49445F50726F6475746F04000100000000000C5065726344
+      6573636F6E746F080004000000010007535542545950450200490006004D6F6E
+      6579000000}
+    Active = True
+    FieldDefs = <
+      item
+        Name = 'ID'
+        DataType = ftInteger
+      end
+      item
+        Name = 'ID_Produto'
+        DataType = ftInteger
+      end
+      item
+        Name = 'PercDesconto'
+        DataType = ftCurrency
+      end>
+    StoreDefs = True
+    object TB_ConsultaID: TIntegerField
+      DisplayWidth = 8
+      FieldName = 'ID'
+      Visible = False
+    end
+    object TB_ConsultaID_Produto: TIntegerField
+      DisplayWidth = 12
+      FieldName = 'ID_Produto'
+    end
+    object TB_ConsultaPercDesconto: TCurrencyField
+      DisplayWidth = 13
+      FieldName = 'PercDesconto'
+    end
+    object TB_ConsultaPrecoProduto: TCurrencyField
+      DisplayWidth = 12
+      FieldKind = fkCalculated
+      FieldName = 'PrecoProduto'
+      Calculated = True
+    end
+  end
+end

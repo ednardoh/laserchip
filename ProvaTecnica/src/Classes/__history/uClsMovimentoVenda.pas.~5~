@@ -1,0 +1,291 @@
+unit uClsMovimentoVenda;
+
+interface
+
+Uses Winapi.Messages, Vcl.Dialogs, System.SysUtils, UConecta, FireDAC.Stan.Intf,
+     Data.DB, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.DBCtrls, FireDAC.Comp.Client, uPrincipal,
+     Graphics, Variants, Jpeg, Windows, Classes, Controls, Forms, DBClient,
+     uDatamodulo;
+
+type
+  TClientes = class
+    private
+      //Cabeçalho da venda
+      FID           : Integer;
+      FIDCorretor   : Integer;
+      FIDCliente    : Integer;
+      FIDOperadora  : Integer;
+      FNumOrcamento : string;
+      FDataEmissao  : string;
+      FDataValidade : string;
+    public
+      //Será usado tanto para os insert como para select
+      QryAuxiliar   : TFDQuery;
+      //Get
+      function GetID          : Integer;
+      function GetIDCorretor  : Integer;
+      function GetIDCliente   : Integer;
+      function GetIDOperadora : Integer;
+      function GetNumOrcamento: string;
+      function GetDataEmissao : string;
+      function GetDataValidade: string;
+
+      //Set
+      procedure SetID(const Value: Integer);
+      procedure SetIDCorretor(const Value: Integer);
+      procedure SetIDCliente(const Value: Integer);
+      procedure SetIDOperadora(const Value: Integer);
+      procedure SetNumOrcamento(const Value: string);
+      procedure SetDataEmissao(const Value: string);
+      procedure SetDataValidade(const Value: string);
+
+      //Consultas
+      procedure PesquisaTabela(strNomeTabela, strNomepesquisa, strValorPesquisa : String); //pesquisa tabela filtrando por um valor
+      procedure ConsultaClientesGeral(strNomeTabela : String); //prenche o grid de clientes no cadastro
+      //Crud
+      procedure GravaDados;
+      procedure ALteraDados;
+      procedure ExcluiDados;
+      //Property
+      property ID           : Integer read GetID            write SetID;
+      property IDCorretor   : Integer read GetIDCorretor    write SetIDCorretor;
+      property IDCliente    : Integer read GetIDCliente     write SetIDCliente;
+      property IDOperadora  : Integer read GetIDOperadora   write SetIDOperadora;
+      property NumOrcamento : Integer read GetNumOrcamento  write SetNumOrcamento;
+      property DataEmissao  : string  read GetDataEmissao   write SetDataEmissao;
+      property DataValidade : string  read GetDataValidade  write SetDataValidade;
+
+    published
+      constructor Create;
+  end;
+
+implementation
+
+{ TClientes }
+constructor TClientes.Create;
+begin
+  QryAuxiliar := TFDQuery.Create(nil);
+  QryAuxiliar.Connection := frmDatamodulo.DBConect;
+end;
+
+function TClientes.GetDataEmissao: string;
+begin
+  Result := FDataEmissao;
+end;
+
+function TClientes.GetDataValidade: string;
+begin
+  Result := FDataValidade;
+end;
+
+function TClientes.GetID: Integer;
+begin
+  Result := FID;
+end;
+
+function TClientes.GetIDCliente: Integer;
+begin
+  Result := FIDCliente;
+end;
+
+function TClientes.GetIDCorretor: Integer;
+begin
+  Result := FIDCorretor;
+end;
+
+function TClientes.GetIDOperadora: Integer;
+begin
+  Result := FIDOperadora;
+end;
+
+function TClientes.GetNumOrcamento: string;
+begin
+  Result := FNumOrcamento;
+end;
+
+procedure TClientes.GravaDados;
+var
+  strSQL: string;
+begin
+  try
+    strSQL :='';
+    frmDatamodulo.DBConect.StartTransaction;
+    QryAuxiliar.Close;
+    QryAuxiliar.SQL.Clear;
+
+    strSQL := ' INSERT INTO TB_Clientes' +
+              '   (CpfCnpj,        ' +
+              '    Nome,           ' +
+              '    Cep,            ' +
+              '    Logradouro,     ' +
+              '    Numero,         ' +
+              '    Complemento,    ' +
+              '    Bairro,         ' +
+              '    Cidade,         ' +
+              '    Ibge_cidade,    ' +
+              '    Sigla_uf,       ' +
+              '    Ibge_uf)        ' +
+              ' VALUES             ' +
+              '   (:CpfCnpj,        ' +
+              '    :Nome,          ' +
+              '    :Cep,           ' +
+              '    :Logradouro,    ' +
+              '    :Numero,        ' +
+              '    :Complemento,   ' +
+              '    :Bairro,        ' +
+              '    :Cidade,        ' +
+              '    :Ibge_cidade,   ' +
+              '    :Sigla_uf,      ' +
+              '    :Ibge_uf)       ';
+
+    QryAuxiliar.SQL.Add(strSQL);
+    QryAuxiliar.ParamByName('CpfCnpj').AsString     := GetCpfCNPJ;
+    QryAuxiliar.ParamByName('NOME').AsString        := GetNome;
+    QryAuxiliar.ParamByName('Cep').AsString         := GetCep;
+    QryAuxiliar.ParamByName('Logradouro').AsString  := GetLogradouro;
+    QryAuxiliar.ParamByName('Numero').AsString      := GetNumero;
+    QryAuxiliar.ParamByName('Complemento').AsString := GetComplemento;
+    QryAuxiliar.ParamByName('Bairro').AsString      := GetBairro;
+    QryAuxiliar.ParamByName('Cidade').AsString      := GetCidade;
+    QryAuxiliar.ParamByName('Ibge_cidade').AsString := GetIbge_cidade;
+    QryAuxiliar.ParamByName('Sigla_uf').AsString    := GetSigla_uf;
+    QryAuxiliar.ParamByName('Ibge_uf').AsString     := GetIbge_uf;
+
+    QryAuxiliar.ExecSQL();
+    frmDatamodulo.DBConect.Commit;
+  except
+    on E: Exception do
+      begin
+        frmDatamodulo.DBConect.Rollback;  //desfaz a transação
+        ShowMessage('Ocorreu um erro Inesperado. (Clientes): '+E.Message);
+      end;
+  end;
+end;
+
+procedure TClientes.ALteraDados;
+var
+  strSQL: string;
+begin
+  try
+    strSQL :='';
+    frmDatamodulo.DBConect.StartTransaction;
+    QryAuxiliar.Close;
+    QryAuxiliar.SQL.Clear;
+
+    strSQL := ' UPDATE TB_Clientes               ' +
+              '   SET CpfCnpj     =:CpfCnpj,     ' +
+              '       Nome        =:Nome,        ' +
+              '       Cep         =:Cep,         ' +
+              '       Logradouro  =:Logradouro,  ' +
+              '       Numero      =:Numero,      ' +
+              '       Complemento =:Complemento, ' +
+              '       Bairro      =:Bairro,      ' +
+              '       Cidade      =:Cidade,      ' +
+              '       Ibge_cidade =:Ibge_cidade, ' +
+              '       Sigla_uf    =:Sigla_uf,    ' +
+              '       Ibge_uf     =:Ibge_uf      ' +
+              ' WHERE Id          =:Id           ';
+    QryAuxiliar.SQL.Add(strSQL);
+    QryAuxiliar.ParamByName('CpfCnpj').AsString     := GetCpfCNPJ;
+    QryAuxiliar.ParamByName('Nome').AsString        := GetNome;
+    QryAuxiliar.ParamByName('Cep').AsString         := GetCep;
+    QryAuxiliar.ParamByName('Logradouro').AsString  := GetLogradouro;
+    QryAuxiliar.ParamByName('Numero').AsString      := GetNumero;
+    QryAuxiliar.ParamByName('Complemento').AsString := GetComplemento;
+    QryAuxiliar.ParamByName('Bairro').AsString      := GetBairro;
+    QryAuxiliar.ParamByName('Cidade').AsString      := GetCidade;
+    QryAuxiliar.ParamByName('Ibge_cidade').AsString := GetIbge_cidade;
+    QryAuxiliar.ParamByName('Sigla_uf').AsString    := GetSigla_uf;
+    QryAuxiliar.ParamByName('Ibge_uf').AsString     := GetIbge_uf;
+    QryAuxiliar.ParamByName('Id').AsInteger         := GetID;
+
+    QryAuxiliar.ExecSQL();
+    frmDatamodulo.DBConect.Commit;
+  except
+    on E: Exception do
+      begin
+        frmDatamodulo.DBConect.Rollback;  //desfaz a transação
+        ShowMessage('Ocorreu um erro Inesperado. (Clientes): '+E.Message);
+      end;
+  end;
+end;
+
+procedure TClientes.ExcluiDados;
+begin
+  try
+    frmDatamodulo.DBConect.StartTransaction;
+    //Agora exclui o cliente
+    QryAuxiliar.Close;
+    QryAuxiliar.SQL.Clear;
+    QryAuxiliar.SQL.Add('DELETE FROM TB_Clientes Where Id=:Id');
+    QryAuxiliar.ParamByName('Id').AsInteger := GetID;
+    QryAuxiliar.ExecSQL();
+    frmDatamodulo.DBConect.Commit;
+  except
+    on E: Exception do
+      begin
+        frmDatamodulo.DBConect.Rollback;  //desfaz a transação
+        ShowMessage('Ocorreu um erro Inesperado. (Clientes): '+E.Message);
+      end;
+  end;
+end;
+
+procedure TClientes.PesquisaTabela(strNomeTabela, strNomepesquisa,
+  strValorPesquisa: String);
+begin
+  QryAuxiliar.Close;
+  QryAuxiliar.SQL.Clear;
+  QryAuxiliar.SQL.Add('SELECT * ');
+  QryAuxiliar.SQL.Add('FROM ' + trim(strNomeTabela));
+  QryAuxiliar.SQL.Add('WHERE '+trim(strNomepesquisa)+ ' LIKE '+ quotedstr('%'+ trim(strValorPesquisa)+'%'));
+  QryAuxiliar.Open();
+  frmDatamodulo.dsPesquisa.DataSet := QryAuxiliar;
+end;
+
+procedure TClientes.ConsultaClientesGeral(strNomeTabela: String);
+begin
+  QryAuxiliar.Close;
+  QryAuxiliar.SQL.Clear;
+  QryAuxiliar.SQL.Add('SELECT * ');
+  QryAuxiliar.SQL.Add('FROM ' + trim(strNomeTabela));
+  QryAuxiliar.SQL.Add(' Order by Id');
+  QryAuxiliar.Open;
+  frmDatamodulo.dsClientes.DataSet := QryAuxiliar;
+end;
+
+procedure TClientes.SetDataEmissao(const Value: string);
+begin
+  FDataEmissao := Value;
+end;
+
+procedure TClientes.SetDataValidade(const Value: string);
+begin
+  FDataValidade := Value;
+end;
+
+procedure TClientes.SetID(const Value: Integer);
+begin
+  FID := Value;
+end;
+
+procedure TClientes.SetIDCliente(const Value: Integer);
+begin
+  FIDCliente := Value;
+end;
+
+procedure TClientes.SetIDCorretor(const Value: Integer);
+begin
+  FIDCorretor := Value;
+end;
+
+procedure TClientes.SetIDOperadora(const Value: Integer);
+begin
+  FIDOperadora := Value;
+end;
+
+procedure TClientes.SetNumOrcamento(const Value: string);
+begin
+  FNumOrcamento := Value;
+end;
+
+end.
