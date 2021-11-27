@@ -12,7 +12,7 @@ type
   TfrmConsultaOperadoras = class(TfrmModeloCad)
     TB_ConsultaID: TIntegerField;
     TB_ConsultaCnpj: TStringField;
-    TB_ConsultaNome: TStringField;
+    TB_ConsultaRazaoSocial: TStringField;
     TB_ConsultaCEP: TStringField;
     TB_ConsultaLogradouro: TStringField;
     TB_ConsultaNumero: TStringField;
@@ -41,6 +41,8 @@ type
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure DBG_CadCellClick(Column: TColumn);
     procedure DBG_CadDblClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure ds_ConsultaStateChange(Sender: TObject);
   private
     { Private declarations }
     Operadoras: TOperadoras;
@@ -57,7 +59,7 @@ implementation
 
 {$R *.dfm}
 
-uses uCadOperadoras, uCadClientes, uConsultaClientes;
+uses uCadOperadoras;
 
 procedure TfrmConsultaOperadoras.btn_AlterarClick(Sender: TObject);
 begin
@@ -66,6 +68,7 @@ begin
   frmCadOperadoras.TB_Cadastro.CreateDataSet;
   frmCadOperadoras.LStatus := '[Alterando]';
   frmCadOperadoras.ShowModal;
+  LeLogo(TB_ConsultaLogo.AsString);
 end;
 
 procedure TfrmConsultaOperadoras.btn_ConsultarClick(Sender: TObject);
@@ -80,19 +83,19 @@ begin
   end
   else
   begin
-    Application.CreateForm(TfrmCadClientes,frmCadClientes);
-    frmCadClientes.TB_Cadastro.CreateDataSet;
-    frmCadClientes.LStatus :='[Consultando]';
+    Application.CreateForm(TfrmCadOperadoras,frmCadOperadoras);
+    frmCadOperadoras.TB_Cadastro.CreateDataSet;
+    frmCadOperadoras.LStatus :='[Consultando]';
     LID := TB_ConsultaID.AsInteger;
-    frmCadClientes.pn_Client_Cad.Visible    := True;
-    frmCadClientes.pn_Client_Filtro.Visible := False;
+    frmCadOperadoras.pn_Client_Cad.Visible    := True;
+    frmCadOperadoras.pn_Client_Filtro.Visible := False;
     TB_Consulta.First;
     while not TB_Consulta.Eof do
     begin
       frmCadOperadoras.TB_Cadastro.Insert;
       frmCadOperadoras.TB_CadastroID.AsInteger         := TB_ConsultaID.AsInteger;
       frmCadOperadoras.TB_CadastroCnpj.AsString        := TB_ConsultaCnpj.AsString;
-      frmCadOperadoras.TB_CadastroNome.AsString        := TB_ConsultaNome.AsString;
+      frmCadOperadoras.TB_CadastroRazaoSocial.AsString        := TB_ConsultaRazaoSocial.AsString;
       frmCadOperadoras.TB_CadastroCEP.AsString         := TB_ConsultaCEP.AsString;
       frmCadOperadoras.TB_CadastroLogradouro.AsString  := TB_ConsultaLogradouro.AsString;
       frmCadOperadoras.TB_CadastroNumero.AsString      := TB_ConsultaNumero.AsString;
@@ -108,6 +111,7 @@ begin
     end;
     frmCadOperadoras.TB_Cadastro.Locate('ID',LID,[]);
     TB_Consulta.Locate('ID',LID,[]);
+    LeLogo(TB_ConsultaLogo.AsString);
     frmCadOperadoras.ShowModal;
   end;
 end;
@@ -130,6 +134,7 @@ begin
       Operadoras.ExcluiDados;
       Operadoras.Free;
       LeTodosRegistros;
+      LeLogo(TB_ConsultaLogo.AsString);
     end;
   end;
 end;
@@ -141,6 +146,7 @@ begin
   frmCadOperadoras.TB_Cadastro.CreateDataSet;
   frmCadOperadoras.LStatus := '[Filtrando]';
   frmCadOperadoras.ShowModal;
+  LeLogo(TB_ConsultaLogo.AsString);
 end;
 
 procedure TfrmConsultaOperadoras.btn_IncluirClick(Sender: TObject);
@@ -150,6 +156,7 @@ begin
   frmCadOperadoras.TB_Cadastro.CreateDataSet;
   frmCadOperadoras.LStatus := '[Incluindo]';
   frmCadOperadoras.ShowModal;
+  LeLogo(TB_ConsultaLogo.AsString);
 end;
 
 procedure TfrmConsultaOperadoras.btn_SairClick(Sender: TObject);
@@ -162,6 +169,7 @@ procedure TfrmConsultaOperadoras.btn_TodosClick(Sender: TObject);
 begin
   inherited;
   LeTodosRegistros;
+  LeLogo(TB_ConsultaLogo.AsString);
 end;
 
 procedure TfrmConsultaOperadoras.DBG_CadCellClick(Column: TColumn);
@@ -185,6 +193,18 @@ end;
 
 procedure TfrmConsultaOperadoras.DBG_CadDrawDataCell(Sender: TObject;
   const Rect: TRect; Field: TField; State: TGridDrawState);
+begin
+  inherited;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaOperadoras.ds_ConsultaStateChange(Sender: TObject);
+begin
+  inherited;
+  LeLogo(TB_ConsultaLogo.AsString);
+end;
+
+procedure TfrmConsultaOperadoras.FormActivate(Sender: TObject);
 begin
   inherited;
   LeLogo(TB_ConsultaLogo.AsString);
@@ -233,8 +253,8 @@ begin
   begin
     TB_Consulta.Insert;
     TB_ConsultaID.AsInteger           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('ID').AsInteger;
-    TB_ConsultaCpfCnpj.AsString       :=  frmDatamodulo.dsClientes.DataSet.FieldByName('CpfCnpj').AsString;
-    TB_ConsultaNome.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Nome').AsString;
+    TB_ConsultaCnpj.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Cnpj').AsString;
+    TB_ConsultaRazaoSocial.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('RazaoSocial').AsString;
     TB_ConsultaCEP.AsString           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Cep').AsString;
     TB_ConsultaLogradouro.AsString    :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Logradouro').AsString;
     TB_ConsultaNumero.AsString        :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Numero').AsString;

@@ -1,22 +1,45 @@
 inherited frmConsultaClientes: TfrmConsultaClientes
   Caption = 'Consulta de Clientes'
+  ClientHeight = 554
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnShow = FormShow
+  ExplicitHeight = 593
   PixelsPerInch = 96
   TextHeight = 13
   inherited pn_Client_Cad: TPanel
-    ExplicitWidth = 1090
-    ExplicitHeight = 622
+    Height = 554
     inherited DBG_Cad: TDBGrid
+      Height = 554
       Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
     end
   end
   inherited pn_Left_Cad: TPanel
-    ExplicitLeft = 1090
-    ExplicitHeight = 622
+    Height = 554
+    inherited btn_Filtrar: TSpeedButton
+      OnClick = btn_FiltrarClick
+    end
+    inherited btn_Todos: TSpeedButton
+      OnClick = btn_TodosClick
+    end
+    inherited btn_Incluir: TSpeedButton
+      OnClick = btn_IncluirClick
+    end
+    inherited btn_Alterar: TSpeedButton
+      OnClick = btn_AlterarClick
+    end
+    inherited btn_Excluir: TSpeedButton
+      OnClick = btn_ExcluirClick
+    end
+    inherited btn_Consultar: TSpeedButton
+      OnClick = btn_ConsultarClick
+    end
     inherited btn_Sair: TSpeedButton
+      Left = 6
+      Top = 487
       OnClick = btn_SairClick
+      ExplicitLeft = 6
+      ExplicitTop = 487
     end
   end
   inherited TB_Consulta: TClientDataSet

@@ -9,6 +9,7 @@ inherited frmConsultaClientes: TfrmConsultaClientes
   TextHeight = 13
   inherited pn_Client_Cad: TPanel
     Height = 554
+    ExplicitHeight = 554
     inherited DBG_Cad: TDBGrid
       Height = 554
       Options = [dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -16,6 +17,7 @@ inherited frmConsultaClientes: TfrmConsultaClientes
   end
   inherited pn_Left_Cad: TPanel
     Height = 554
+    ExplicitHeight = 554
     inherited btn_Filtrar: TSpeedButton
       OnClick = btn_FiltrarClick
     end

@@ -248,25 +248,25 @@ begin
 
   TB_Consulta.EmptyDataSet;
 
-  frmDatamodulo.dsClientes.DataSet.First;
-  while not frmDatamodulo.dsClientes.DataSet.eof  do
+  frmDatamodulo.dsPesquisa.DataSet.First;
+  while not frmDatamodulo.dsPesquisa.DataSet.eof  do
   begin
     TB_Consulta.Insert;
-    TB_ConsultaID.AsInteger           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('ID').AsInteger;
-    TB_ConsultaCnpj.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Cnpj').AsString;
-    TB_ConsultaRazaoSocial.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('RazaoSocial').AsString;
-    TB_ConsultaCEP.AsString           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Cep').AsString;
-    TB_ConsultaLogradouro.AsString    :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Logradouro').AsString;
-    TB_ConsultaNumero.AsString        :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Numero').AsString;
-    TB_ConsultaComplemento.AsString   :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Complemento').AsString;
-    TB_ConsultaBairro.AsString        :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Bairro').AsString;
-    TB_ConsultaCidade.AsString        :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Cidade').AsString;
-    TB_ConsultaSigla_uf.AsString      :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Ibge_cidade').AsString;
-    TB_ConsultaIbge_cidade.AsString   :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Sigla_uf').AsString;
-    TB_ConsultaIbge_uf.AsString       :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Ibge_uf').AsString;
-    TB_ConsultaLogo.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Logo').AsString;
+    TB_ConsultaID.AsInteger           :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('ID').AsInteger;
+    TB_ConsultaCnpj.AsString          :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Cnpj').AsString;
+    TB_ConsultaRazaoSocial.AsString          :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('RazaoSocial').AsString;
+    TB_ConsultaCEP.AsString           :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Cep').AsString;
+    TB_ConsultaLogradouro.AsString    :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Logradouro').AsString;
+    TB_ConsultaNumero.AsString        :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Numero').AsString;
+    TB_ConsultaComplemento.AsString   :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Complemento').AsString;
+    TB_ConsultaBairro.AsString        :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Bairro').AsString;
+    TB_ConsultaCidade.AsString        :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Cidade').AsString;
+    TB_ConsultaSigla_uf.AsString      :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Ibge_cidade').AsString;
+    TB_ConsultaIbge_cidade.AsString   :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Sigla_uf').AsString;
+    TB_ConsultaIbge_uf.AsString       :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Ibge_uf').AsString;
+    TB_ConsultaLogo.AsString          :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Logo').AsString;
     TB_Consulta.Post;
-    frmDatamodulo.dsClientes.DataSet.next;
+    frmDatamodulo.dsPesquisa.DataSet.next;
   end;
 end;
 

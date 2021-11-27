@@ -174,17 +174,17 @@ begin
 
   TB_Consulta.EmptyDataSet;
 
-  frmDatamodulo.dsClientes.DataSet.First;
-  while not frmDatamodulo.dsClientes.DataSet.eof  do
+  frmDatamodulo.dsPesquisa.DataSet.First;
+  while not frmDatamodulo.dsPesquisa.DataSet.eof  do
   begin
     TB_Consulta.Insert;
-    TB_ConsultaID.AsInteger           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('ID').AsInteger;
-    TB_ConsultaNome.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Nome').AsString;
-    TB_Consultacpf.AsString           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('cpf').AsString;
-    TB_ConsultaDT_Nascimento.AsString :=  frmDatamodulo.dsClientes.DataSet.FieldByName('DT_Nascimento').AsString;
-    TB_ConsultaCelular.AsString       :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Celular').AsString;
+    TB_ConsultaID.AsInteger           :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('ID').AsInteger;
+    TB_ConsultaNome.AsString          :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Nome').AsString;
+    TB_Consultacpf.AsString           :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('cpf').AsString;
+    TB_ConsultaDT_Nascimento.AsString :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('DT_Nascimento').AsString;
+    TB_ConsultaCelular.AsString       :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Celular').AsString;
     TB_Consulta.Post;
-    frmDatamodulo.dsClientes.DataSet.next;
+    frmDatamodulo.dsPesquisa.DataSet.next;
   end;
 end;
 

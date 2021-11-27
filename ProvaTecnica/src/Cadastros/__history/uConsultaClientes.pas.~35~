@@ -53,11 +53,14 @@ procedure TfrmConsultaClientes.btn_AlterarClick(Sender: TObject);
 begin
   inherited;
   Application.CreateForm(TfrmCadClientes,frmCadClientes);
+  frmCadClientes.TB_Cadastro.CreateDataSet;
   frmCadClientes.LStatus := '[Alterando]';
   frmCadClientes.ShowModal;
 end;
 
 procedure TfrmConsultaClientes.btn_ConsultarClick(Sender: TObject);
+var
+  LID: Integer;
 begin
   inherited;
   if TB_Consulta.RecordCount = 0 then
@@ -67,9 +70,34 @@ begin
   end
   else
   begin
-    frmCadClientes.LStatus :='Consultando';
+    Application.CreateForm(TfrmCadClientes,frmCadClientes);
+    frmCadClientes.TB_Cadastro.CreateDataSet;
+    frmCadClientes.LStatus :='[Consultando]';
+    LID := TB_ConsultaID.AsInteger;
     frmCadClientes.pn_Client_Cad.Visible    := True;
     frmCadClientes.pn_Client_Filtro.Visible := False;
+    TB_Consulta.First;
+    while not TB_Consulta.Eof do
+    begin
+      frmCadClientes.TB_Cadastro.Insert;
+      frmCadClientes.TB_CadastroID.AsInteger         := TB_ConsultaID.AsInteger;
+      frmCadClientes.TB_CadastroCpfCnpj.AsString     := TB_ConsultaCpfCnpj.AsString;
+      frmCadClientes.TB_CadastroNome.AsString        := TB_ConsultaNome.AsString;
+      frmCadClientes.TB_CadastroCEP.AsString         := TB_ConsultaCEP.AsString;
+      frmCadClientes.TB_CadastroLogradouro.AsString  := TB_ConsultaLogradouro.AsString;
+      frmCadClientes.TB_CadastroNumero.AsString      := TB_ConsultaNumero.AsString;
+      frmCadClientes.TB_CadastroComplemento.AsString := TB_ConsultaComplemento.AsString;
+      frmCadClientes.TB_CadastroBairro.AsString      := TB_ConsultaBairro.AsString;
+      frmCadClientes.TB_CadastroCidade.AsString      := TB_ConsultaCidade.AsString;
+      frmCadClientes.TB_CadastroSigla_uf.AsString    := TB_ConsultaSigla_uf.AsString;
+      frmCadClientes.TB_CadastroIbge_cidade.AsString := TB_ConsultaIbge_cidade.AsString;
+      frmCadClientes.TB_CadastroIbge_uf.AsString     := TB_ConsultaIbge_uf.AsString;
+      frmCadClientes.TB_Cadastro.Post;
+      TB_Consulta.Next;
+    end;
+    frmCadClientes.TB_Cadastro.Locate('ID',LID,[]);
+    TB_Consulta.Locate('ID',LID,[]);
+    frmCadClientes.ShowModal;
   end;
 end;
 
@@ -99,6 +127,7 @@ procedure TfrmConsultaClientes.btn_FiltrarClick(Sender: TObject);
 begin
   inherited;
   Application.CreateForm(TfrmCadClientes,frmCadClientes);
+  frmCadClientes.TB_Cadastro.CreateDataSet;
   frmCadClientes.LStatus := '[Filtrando]';
   frmCadClientes.ShowModal;
 end;
@@ -107,6 +136,7 @@ procedure TfrmConsultaClientes.btn_IncluirClick(Sender: TObject);
 begin
   inherited;
   Application.CreateForm(TfrmCadClientes,frmCadClientes);
+  frmCadClientes.TB_Cadastro.CreateDataSet;
   frmCadClientes.LStatus := '[Incluindo]';
   frmCadClientes.ShowModal;
 end;
@@ -153,7 +183,7 @@ begin
 
   TB_Consulta.EmptyDataSet;
 
-  frmDatamodulo.dsClientes.DataSet.First;
+  frmDatamodulo.dsPesquisa.DataSet.First;
   while not frmDatamodulo.dsClientes.DataSet.eof  do
   begin
     TB_Consulta.Insert;

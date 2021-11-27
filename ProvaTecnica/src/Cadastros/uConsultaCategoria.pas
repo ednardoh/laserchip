@@ -169,14 +169,14 @@ begin
 
   TB_Consulta.EmptyDataSet;
 
-  frmDatamodulo.dsClientes.DataSet.First;
+  frmDatamodulo.dsPesquisa.DataSet.First;
   while not frmDatamodulo.dsClientes.DataSet.eof  do
   begin
     TB_Consulta.Insert;
-    TB_ConsultaID.AsInteger           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('ID').AsInteger;
-    TB_ConsultaDescricao.AsString     :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Descricao').AsString;
+    TB_ConsultaID.AsInteger           :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('ID').AsInteger;
+    TB_ConsultaDescricao.AsString     :=  frmDatamodulo.dsPesquisa.DataSet.FieldByName('Descricao').AsString;
     TB_Consulta.Post;
-    frmDatamodulo.dsClientes.DataSet.next;
+    frmDatamodulo.dsPesquisa.DataSet.next;
   end;
 end;
 

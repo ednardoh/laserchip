@@ -20,7 +20,6 @@ object frmDatamodulo: TfrmDatamodulo
       'Database=DBVendas'
       'OSAuthent=Yes'
       'DriverID=MSSQL')
-    Connected = True
     LoginPrompt = False
     Left = 16
     Top = 24
@@ -47,7 +46,6 @@ object frmDatamodulo: TfrmDatamodulo
     Top = 152
   end
   object TB_Prduto: TFDQuery
-    Active = True
     Connection = DBConect
     SQL.Strings = (
       'SELECT * FROM TB_ProdutoPLS')

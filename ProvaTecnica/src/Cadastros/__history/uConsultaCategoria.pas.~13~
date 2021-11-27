@@ -6,12 +6,12 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uModeloCad, Data.DB, Datasnap.DBClient,
   System.ImageList, Vcl.ImgList, Vcl.Buttons, Vcl.Grids, Vcl.DBGrids,
-  Vcl.ExtCtrls, uClsOperadoras, uDatamodulo, Vcl.StdCtrls, uClsCategoria;
+  Vcl.ExtCtrls, uClsOperadoras, uDatamodulo, Vcl.StdCtrls, uClsCategoriaPLS;
 
 type
   TfrmConsultaCategoria = class(TfrmModeloCad)
     TB_ConsultaID: TIntegerField;
-    TB_ConsultaCategoria: TStringField;
+    TB_ConsultaDescricao: TStringField;
     procedure btn_SairClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -25,7 +25,7 @@ type
     procedure DBG_CadCellClick(Column: TColumn);
   private
     { Private declarations }
-    OCategoria: TCorretor;
+    OCategoria: TCategoria;
     procedure LeTodosRegistros;
   public
     { Public declarations }
@@ -38,15 +38,15 @@ implementation
 
 {$R *.dfm}
 
-uses uCadOperadoras, uCadClientes, uConsultaClientes, uCadCorretor;
+uses uCadCategoria;
 
 procedure TfrmConsultaCategoria.btn_AlterarClick(Sender: TObject);
 begin
   inherited;
-  Application.CreateForm(TfrmCadCorretor,frmCadCorretor);
-  frmCadCorretor.TB_Cadastro.CreateDataSet;
-  frmCadCorretor.LStatus := '[Alterando]';
-  frmCadCorretor.ShowModal;
+  Application.CreateForm(TfrmCadCategoria,frmCadCategoria);
+  frmCadCategoria.TB_Cadastro.CreateDataSet;
+  frmCadCategoria.LStatus := '[Alterando]';
+  frmCadCategoria.ShowModal;
 end;
 
 procedure TfrmConsultaCategoria.btn_ConsultarClick(Sender: TObject);
@@ -61,26 +61,24 @@ begin
   end
   else
   begin
-    Application.CreateForm(TfrmCadCorretor,frmCadCorretor);
-    frmCadCorretor.TB_Cadastro.CreateDataSet;
-    frmCadCorretor.LStatus :='[Consultando]';
+    Application.CreateForm(TfrmCadCategoria,frmCadCategoria);
+    frmCadCategoria.TB_Cadastro.CreateDataSet;
+    frmCadCategoria.LStatus :='[Consultando]';
     LID := TB_ConsultaID.AsInteger;
-    frmCadCorretor.pn_Client_Cad.Visible    := True;
-    frmCadCorretor.pn_Client_Filtro.Visible := False;
+    frmCadCategoria.pn_Client_Cad.Visible    := True;
+    frmCadCategoria.pn_Client_Filtro.Visible := False;
     TB_Consulta.First;
     while not TB_Consulta.Eof do
     begin
-      frmCadCorretor.TB_Cadastro.Insert;
-      frmCadCorretor.TB_CadastroID.AsInteger         := TB_ConsultaID.AsInteger;
-      frmCadCorretor.TB_CadastroNome.AsString        := TB_ConsultaNome.AsString;
-      frmCadCorretor.TB_CadastroCPF.AsString         := TB_ConsultaCPF.AsString;
-      frmCadCorretor.TB_CadastroCelular.AsString     := TB_ConsultaCelular.AsString;
-      frmCadCorretor.TB_Cadastro.Post;
+      frmCadCategoria.TB_Cadastro.Insert;
+      frmCadCategoria.TB_CadastroID.AsInteger         := TB_ConsultaID.AsInteger;
+      frmCadCategoria.TB_CadastroDescricao.AsString   := TB_ConsultaDescricao.AsString;
+      frmCadCategoria.TB_Cadastro.Post;
       TB_Consulta.Next;
     end;
-    frmCadCorretor.TB_Cadastro.Locate('ID',LID,[]);
+    frmCadCategoria.TB_Cadastro.Locate('ID',LID,[]);
     TB_Consulta.Locate('ID',LID,[]);
-    frmCadCorretor.ShowModal;
+    frmCadCategoria.ShowModal;
   end;
 end;
 
@@ -94,13 +92,13 @@ begin
   end
   else
   begin
-    if Application.messageBox('Deseja Realmente Apagar Esse Corretor?',
+    if Application.messageBox('Deseja Realmente Apagar Essa Categoria?',
       'Confirmação',mb_YesNo+mb_IconInformation+mb_DefButton2) = IDYES then
     begin
-      OCorretor:=TCorretor.create;
-      OCorretor.SetID(TB_ConsultaID.AsInteger);
-      OCorretor.ExcluiDados;
-      OCorretor.Free;
+      OCategoria:=TCategoria.create;
+      OCategoria.SetID(TB_ConsultaID.AsInteger);
+      OCategoria.ExcluiDados;
+      OCategoria.Free;
       LeTodosRegistros;
     end;
   end;
@@ -109,19 +107,19 @@ end;
 procedure TfrmConsultaCategoria.btn_FiltrarClick(Sender: TObject);
 begin
   inherited;
-  Application.CreateForm(TfrmCadCorretor,frmCadCorretor);
-  frmCadCorretor.TB_Cadastro.CreateDataSet;
-  frmCadCorretor.LStatus := '[Filtrando]';
-  frmCadCorretor.ShowModal;
+  Application.CreateForm(TfrmCadCategoria,frmCadCategoria);
+  frmCadCategoria.TB_Cadastro.CreateDataSet;
+  frmCadCategoria.LStatus := '[Filtrando]';
+  frmCadCategoria.ShowModal;
 end;
 
 procedure TfrmConsultaCategoria.btn_IncluirClick(Sender: TObject);
 begin
   inherited;
-  Application.CreateForm(TfrmCadCorretor,frmCadCorretor);
-  frmCadCorretor.TB_Cadastro.CreateDataSet;
-  frmCadCorretor.LStatus := '[Incluindo]';
-  frmCadCorretor.ShowModal;
+  Application.CreateForm(TfrmCadCategoria,frmCadCategoria);
+  frmCadCategoria.TB_Cadastro.CreateDataSet;
+  frmCadCategoria.LStatus := '[Incluindo]';
+  frmCadCategoria.ShowModal;
 end;
 
 procedure TfrmConsultaCategoria.btn_SairClick(Sender: TObject);
@@ -154,7 +152,7 @@ procedure TfrmConsultaCategoria.FormCloseQuery(Sender: TObject;
 begin
   inherited;
   if CanClose then
-    frmConsultaCorretor := NIL;
+    frmConsultaCategoria := NIL;
 end;
 
 procedure TfrmConsultaCategoria.FormShow(Sender: TObject);
@@ -165,9 +163,9 @@ end;
 
 procedure TfrmConsultaCategoria.LeTodosRegistros;
 begin
-  OCorretor:=TCorretor.create;
-  OCorretor.ConsultaClientesGeral('TB_Corretor');
-  OCorretor.Free;
+  OCategoria:=TCategoria.create;
+  OCategoria.ConsultaClientesGeral('TB_CategoriaPLS');
+  OCategoria.Free;
 
   TB_Consulta.EmptyDataSet;
 
@@ -176,13 +174,12 @@ begin
   begin
     TB_Consulta.Insert;
     TB_ConsultaID.AsInteger           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('ID').AsInteger;
-    TB_ConsultaNome.AsString          :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Nome').AsString;
-    TB_Consultacpf.AsString           :=  frmDatamodulo.dsClientes.DataSet.FieldByName('cpf').AsString;
-    TB_ConsultaDT_Nascimento.AsString :=  frmDatamodulo.dsClientes.DataSet.FieldByName('DT_Nascimento').AsString;
-    TB_ConsultaCelular.AsString       :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Celular').AsString;
+    TB_ConsultaDescricao.AsString     :=  frmDatamodulo.dsClientes.DataSet.FieldByName('Descricao').AsString;
     TB_Consulta.Post;
     frmDatamodulo.dsClientes.DataSet.next;
   end;
 end;
 
 end.
+
+
